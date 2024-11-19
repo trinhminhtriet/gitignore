@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -35,7 +36,8 @@ func runCreate(cmd *Command, args []string) {
 		os.Exit(2)
 	}
 
-	availableLanguages, _, err := client.Gitignores.List()
+	ctx := context.Background()
+	availableLanguages, _, err := client.Gitignores.List(ctx)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(2)
@@ -44,13 +46,12 @@ func runCreate(cmd *Command, args []string) {
 	chosenLanguages := make([]*string, len(args))
 OUTER:
 	for i, n := range args {
-		for _, a := range *availableLanguages {
-			if strings.ToLower(n) == strings.ToLower(a) {
+		for _, a := range availableLanguages {
+			if strings.EqualFold(n, a) {
 				chosenLanguages[i] = &a
 				continue OUTER
 			}
 		}
-		// Uh oh, looks like the language the user gave us isn't valid.
 		fmt.Fprintf(os.Stderr, "%s is not a valid template!\n", n)
 		os.Exit(2)
 	}
@@ -63,9 +64,9 @@ OUTER:
 
 		go func(n string, i int, gitignores []*github.Gitignore) {
 			defer wg.Done()
-
 			fmt.Println("Fetching template for " + n + "...")
-			gitignore, _, err := client.Gitignores.Get(n)
+			ctx := context.Background()
+			gitignore, _, err := client.Gitignores.Get(ctx, n)
 			if err != nil {
 				fmt.Println(err)
 				return
@@ -93,11 +94,6 @@ OUTER:
 	fmt.Println("Done!")
 }
 
-// Returns something akin to the following:
-//
-// ##########
-// #   Go   #
-// ##########
 func header(name string) string {
 	line := strings.Repeat("#", len(name)+8)
 	mid := "#   " + name + "   #"

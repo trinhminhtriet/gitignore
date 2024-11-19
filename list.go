@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"context"
+	"fmt"
+)
 
 var cmdList = &Command{
 	UsageLine: "list",
@@ -21,13 +24,14 @@ func init() {
 }
 
 func runList(cmd *Command, args []string) {
-	templates, _, err := client.Gitignores.List()
+	ctx := context.Background()
+	templates, _, err := client.Gitignores.List(ctx)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	for _, t := range *templates {
+	for _, t := range templates {
 		fmt.Println(t)
 	}
 }
