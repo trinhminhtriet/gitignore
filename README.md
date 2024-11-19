@@ -7,6 +7,7 @@
 | (_| || || |_ | || (_| || | | || (_) || |   |  __/
  \__, ||_| \__||_| \__, ||_| |_| \___/ |_|    \___|
  |___/             |___/
+
 ```
 
 ## ✨ Features
@@ -23,7 +24,7 @@ Binaries for all major platforms are available on the
 
 You'll need Go for this. You can grab it over at http://golang.org/.
 
-````sh
+```sh
 go get github.com/trinhminhtriet/gitignore
 go install github.com/trinhminhtriet/gitignore
 ```
@@ -34,7 +35,7 @@ To create a `.gitignore` file for specific languages or frameworks, use the `git
 
 ```sh
 gitignore create go java ruby
-````
+```
 
 This will generate a `.gitignore` file with the appropriate rules for those languages.
 
